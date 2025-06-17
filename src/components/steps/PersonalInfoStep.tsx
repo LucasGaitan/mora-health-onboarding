@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StepWrapper } from '../StepWrapper';
 import { FormField } from '../ui/FormField';
 import { FormSection } from '../ui/FormSection';
 import { PersonalInfo } from '../../types/onboarding';
-import { User, MapPin, Mail, Phone, Shield, Calendar } from 'lucide-react';
+import { User, MapPin, Mail } from 'lucide-react';
 
 interface PersonalInfoStepProps {
   data: PersonalInfo;

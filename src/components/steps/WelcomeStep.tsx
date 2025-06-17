@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Users } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface WelcomeStepProps {
   onNext: () => void;

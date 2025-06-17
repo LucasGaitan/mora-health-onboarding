@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StepWrapper } from '../StepWrapper';
 import { FormField } from '../ui/FormField';
 import { FormSection } from '../ui/FormSection';
 import { MultiSelect } from '../ui/MultiSelect';
 import { USPreferences } from '../../types/onboarding';
-import { MapPin, Building, Clock, DollarSign, Star, TrendingUp } from 'lucide-react';
+import { MapPin, Building, Clock, DollarSign, Star } from 'lucide-react';
 
 interface USPreferencesStepProps {
   data: USPreferences;
@@ -19,7 +19,6 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
   onNext,
   onPrevious
 }) => {
-  const [errors, setErrors] = useState<Partial<USPreferences>>({});
 
   const isValid = Boolean(
     data.preferredStates.length > 0 && data.hospitalTypes.length > 0 && 

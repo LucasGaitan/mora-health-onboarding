@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, Save, Clock, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, CheckCircle } from 'lucide-react';
 
 interface StepWrapperProps {
   title: string;
@@ -31,10 +31,7 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
   nextButtonText = 'Continuar',
   isLoading = false,
   autoSave = false,
-  completionPercentage = 0,
-  estimatedTime,
-  stepNumber,
-  totalSteps
+  completionPercentage = 0
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showSaveIndicator, setShowSaveIndicator] = useState(false);

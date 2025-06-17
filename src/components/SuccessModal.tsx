@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle, X, Mail, Phone, Calendar, Sparkles } from 'lucide-react';
+import { X, Mail, Phone, Calendar } from 'lucide-react';
 
 interface SuccessModalProps {
   isOpen: boolean;
@@ -7,7 +7,7 @@ interface SuccessModalProps {
   email?: string;
 }
 
-export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, email }) => {
+export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {

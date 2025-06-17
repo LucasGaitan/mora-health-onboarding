@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AlertCircle, CheckCircle, Info, Eye, EyeOff, Calendar } from 'lucide-react';
 
 interface FormFieldProps {
@@ -65,7 +65,6 @@ export const FormField: React.FC<FormFieldProps> = ({
   
   const hasError = error && touched;
   const hasSuccess = success && touched && !error && value;
-  const isEmpty = !value || (typeof value === 'string' && value.trim() === '');
   
   // Character count for text inputs with maxLength
   const showCharCount = maxLength && (type === 'text' || type === 'textarea') && focused;

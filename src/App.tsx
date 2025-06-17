@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { StepIndicator } from './components/StepIndicator';
 import { ProcessSection } from './components/ProcessSection';
 import { MobileMenu } from './components/MobileMenu';
@@ -100,7 +100,6 @@ function App() {
   
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
-  const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Auto-save functionality
@@ -110,7 +109,6 @@ function App() {
       const saveTimer = setTimeout(() => {
         try {
           localStorage.setItem('mora-health-onboarding', JSON.stringify(data));
-          setLastSaveTime(new Date());
           setIsAutoSaving(false);
         } catch (error) {
           console.error('Error saving data:', error);
