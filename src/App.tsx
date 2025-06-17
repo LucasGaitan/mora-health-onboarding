@@ -198,7 +198,6 @@ function App() {
 
   const startOnboarding = () => {
     setShowOnboarding(true);
-    setShowSuccessModal(true)
 
     setData(prev => ({ ...prev, currentStep: 1 })); // Skip welcome step and go directly to personal info
   };
