@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { StepIndicator } from './components/StepIndicator';
 import { ProcessSection } from './components/ProcessSection';
-import { MobileMenu } from './components/MobileMenu';
+
 import { SuccessModal } from './components/SuccessModal';
-import { WelcomeStep } from './components/steps/WelcomeStep';
+
 import { PersonalInfoStep } from './components/steps/PersonalInfoStep';
 import { ProfessionalInfoStep } from './components/steps/ProfessionalInfoStep';
 import { WorkExperienceStep } from './components/steps/WorkExperienceStep';
@@ -73,7 +73,6 @@ const initialData: OnboardingData = {
 };
 
 const stepTitles = [
-  'Bienvenida',
   'Personal',
   'Profesional',
   'Experiencia',
@@ -99,20 +98,16 @@ function App() {
   });
   
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // Auto-save functionality
   useEffect(() => {
-    if (showOnboarding && data.currentStep > 0) {
-      setIsAutoSaving(true);
+    if (showOnboarding && data.currentStep >= 0) {
       const saveTimer = setTimeout(() => {
         try {
           localStorage.setItem('mora-health-onboarding', JSON.stringify(data));
-          setIsAutoSaving(false);
         } catch (error) {
           console.error('Error saving data:', error);
-          setIsAutoSaving(false);
         }
       }, 1000); // Save after 1 second of inactivity
 
@@ -124,24 +119,24 @@ function App() {
   const getCompletedSteps = (): number[] => {
     const completed: number[] = [];
     
-    // Check each step completion
+    // Check each step completion (adjusted indices after removing welcome step)
     if (data.personalInfo.firstName && data.personalInfo.lastName && data.personalInfo.email) {
-      completed.push(1);
+      completed.push(0);
     }
     if (data.professionalInfo.nursingDegree && data.professionalInfo.graduationYear) {
-      completed.push(2);
+      completed.push(1);
     }
     if (data.workExperience.hospitalName && data.workExperience.position) {
-      completed.push(3);
+      completed.push(2);
     }
     if (data.englishProficiency.speakingLevel && data.englishProficiency.listeningLevel) {
-      completed.push(4);
+      completed.push(3);
     }
     if (data.usPreferences.preferredStates.length > 0 && data.usPreferences.startDate) {
-      completed.push(5);
+      completed.push(4);
     }
     if (data.nclexStatus.planToTake && data.nclexStatus.studyTimeframe) {
-      completed.push(6);
+      completed.push(5);
     }
     
     return completed;
@@ -198,8 +193,7 @@ function App() {
 
   const startOnboarding = () => {
     setShowOnboarding(true);
-
-    setData(prev => ({ ...prev, currentStep: 1 })); // Skip welcome step and go directly to personal info
+    setData(prev => ({ ...prev, currentStep: 0 })); // Start with personal info (now index 0)
   };
 
   const previousStep = () => {
@@ -212,7 +206,7 @@ function App() {
   const goToStep = (stepIndex: number) => {
     const completedSteps = getCompletedSteps();
     // Allow navigation to completed steps or current step
-    if (completedSteps.includes(stepIndex) || stepIndex === data.currentStep || stepIndex === 0) {
+    if (completedSteps.includes(stepIndex) || stepIndex === data.currentStep) {
       setData(prev => ({ ...prev, currentStep: stepIndex }));
     }
   };
@@ -236,11 +230,8 @@ function App() {
   };
 
   const renderStep = () => {
-
     switch (data.currentStep) {
       case 0:
-        return <WelcomeStep onNext={nextStep} />;
-      case 1:
         return (
           <PersonalInfoStep
             data={data.personalInfo}
@@ -249,7 +240,7 @@ function App() {
             onPrevious={previousStep}
           />
         );
-      case 2:
+      case 1:
         return (
           <ProfessionalInfoStep
             data={data.professionalInfo}
@@ -258,7 +249,7 @@ function App() {
             onPrevious={previousStep}
           />
         );
-      case 3:
+      case 2:
         return (
           <WorkExperienceStep
             data={data.workExperience}
@@ -267,7 +258,7 @@ function App() {
             onPrevious={previousStep}
           />
         );
-      case 4:
+      case 3:
         return (
           <EnglishProficiencyStep
             data={data.englishProficiency}
@@ -276,7 +267,7 @@ function App() {
             onPrevious={previousStep}
           />
         );
-      case 5:
+      case 4:
         return (
           <USPreferencesStep
             data={data.usPreferences}
@@ -285,7 +276,7 @@ function App() {
             onPrevious={previousStep}
           />
         );
-      case 6:
+      case 5:
         return (
           <NCLEXStatusStep
             data={data.nclexStatus}
@@ -294,7 +285,7 @@ function App() {
             onPrevious={previousStep}
           />
         );
-      case 7:
+      case 6:
         return (
           <SummaryStep
             data={data}
@@ -303,7 +294,14 @@ function App() {
           />
         );
       default:
-        return <WelcomeStep onNext={nextStep} />;
+        return (
+          <PersonalInfoStep
+            data={data.personalInfo}
+            updateData={updatePersonalInfo}
+            onNext={nextStep}
+            onPrevious={previousStep}
+          />
+        );
     }
   };
 
@@ -317,21 +315,12 @@ function App() {
               <img src="/67cdc67308ea1ae1f6113e19_logo.svg" alt="Mora Health" className="h-8" />
             </div>
             <div className="flex items-center space-x-6">
-              {/* Auto-save indicator */}
-              {showOnboarding && isAutoSaving && (
-                <div className="hidden md:flex items-center gap-2 text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                  <div className="w-3 h-3 border border-green-600 border-t-transparent rounded-full animate-spin"></div>
-                  Guardando...
-                </div>
-              )}
-              
               <button 
                 onClick={startOnboarding}
                 className="hidden md:block mora-btn-primary px-6 py-3 rounded-lg font-semibold shadow-sm hover:shadow-lg transition-all"
               >
                 Comienza Tu Viaje
               </button>
-              <MobileMenu onStartJourney={startOnboarding} />
             </div>
           </div>
         </div>

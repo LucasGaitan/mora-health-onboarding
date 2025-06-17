@@ -30,7 +30,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         return '';
       case 'phone':
         if (!value) return 'El teléfono es requerido';
-        if (!/^[\+]?[0-9\s\-\(\)]{10,}$/.test(value)) return 'Ingresa un número de teléfono válido (mínimo 10 dígitos)';
+        if (!/^[+]?[0-9\s\-()]{10,}$/.test(value)) return 'Ingresa un número de teléfono válido (mínimo 10 dígitos)';
         return '';
       case 'firstName':
         if (!value) return 'El nombre es requerido';
@@ -42,7 +42,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         if (value.length < 2) return 'Los apellidos deben tener al menos 2 caracteres';
         if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(value)) return 'Los apellidos solo pueden contener letras';
         return '';
-      case 'dateOfBirth':
+      case 'dateOfBirth': {
         if (!value) return 'La fecha de nacimiento es requerida';
         const birthDate = new Date(value);
         const today = new Date();
@@ -50,6 +50,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         if (age < 18) return 'Debes ser mayor de 18 años';
         if (age > 80) return 'Por favor verifica la fecha de nacimiento';
         return '';
+      }
       case 'currentCountry':
       case 'currentCity':
         if (!value) return 'Este campo es requerido';
@@ -133,11 +134,11 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       onNext={onNext}
       onPrevious={onPrevious}
       canGoNext={isValid}
-      autoSave
+      isFirst={true}
       completionPercentage={completionPercentage}
       estimatedTime="3-5 min"
       stepNumber={1}
-      totalSteps={8}
+      totalSteps={7}
     >
       <div className="space-y-8">
 
@@ -192,8 +193,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               error={errors.dateOfBirth}
               success={!errors.dateOfBirth && !!data.dateOfBirth && !!touched.dateOfBirth}
               autoComplete="bday"
-              tooltip="Necesaria para verificar elegibilidad laboral en Estados Unidos"
               helpText="Debes ser mayor de 18 años"
+              useCalendarPicker={true}
             />
 
             <FormField
@@ -209,7 +210,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               error={errors.nationality}
               success={!errors.nationality && !!data.nationality && !!touched.nationality}
               autoComplete="country"
-              tooltip="Tu nacionalidad actual según tu pasaporte"
             />
           </div>
         </FormSection>
@@ -233,7 +233,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               error={errors.email}
               success={!errors.email && !!data.email && !!touched.email}
               autoComplete="email"
-              tooltip="Usaremos este correo para todas las comunicaciones importantes sobre tu proceso"
               loading={isValidating && touched.email}
               helpText="Asegúrate de que sea un correo que revises frecuentemente"
             />
@@ -250,7 +249,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               error={errors.phone}
               success={!errors.phone && !!data.phone && !!touched.phone}
               autoComplete="tel"
-              tooltip="Incluye código de país para llamadas internacionales"
               loading={isValidating && touched.phone}
               helpText="Formato: +[código país] [número]. Ej: +52 555 123 4567"
             />
@@ -277,7 +275,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               error={errors.currentCountry}
               success={!errors.currentCountry && !!data.currentCountry && !!touched.currentCountry}
               autoComplete="country"
-              tooltip="El país donde resides actualmente"
             />
 
             <FormField
@@ -292,7 +289,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               error={errors.currentCity}
               success={!errors.currentCity && !!data.currentCity && !!touched.currentCity}
               autoComplete="address-level2"
-              tooltip="La ciudad donde vives actualmente"
               maxLength={100}
               helpText="Nombre completo de la ciudad"
             />

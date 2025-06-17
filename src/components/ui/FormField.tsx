@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { AlertCircle, CheckCircle, Info, Eye, EyeOff, Calendar } from 'lucide-react';
+import { AlertCircle, CheckCircle, Eye, EyeOff, Calendar } from 'lucide-react';
+import { DatePicker } from './DatePicker';
 
 interface FormFieldProps {
   label: string;
@@ -12,7 +13,6 @@ interface FormFieldProps {
   required?: boolean;
   error?: string;
   success?: boolean;
-  tooltip?: string;
   options?: { value: string; label: string }[];
   rows?: number;
   min?: number;
@@ -26,6 +26,7 @@ interface FormFieldProps {
   maxLength?: number;
   pattern?: string;
   step?: number;
+  useCalendarPicker?: boolean; // New prop to enable react-calendar
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -39,7 +40,6 @@ export const FormField: React.FC<FormFieldProps> = ({
   required = false,
   error,
   success = false,
-  tooltip,
   options,
   rows = 4,
   min,
@@ -52,7 +52,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   loading = false,
   maxLength,
   pattern,
-  step
+  step,
+  useCalendarPicker = false
 }) => {
   const [focused, setFocused] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -60,7 +61,6 @@ export const FormField: React.FC<FormFieldProps> = ({
   
   const fieldId = `field-${label.toLowerCase().replace(/\s+/g, '-')}`;
   const errorId = `${fieldId}-error`;
-  const tooltipId = `${fieldId}-tooltip`;
   const helpId = `${fieldId}-help`;
   
   const hasError = error && touched;
@@ -128,7 +128,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       required,
       autoComplete,
       'aria-invalid': hasError ? true : false,
-      'aria-describedby': [ariaDescribedBy, hasError ? errorId : '', tooltip ? tooltipId : '', helpText ? helpId : '']
+      'aria-describedby': [ariaDescribedBy, hasError ? errorId : '', helpText ? helpId : '']
         .filter(Boolean).join(' ') || undefined,
       className: type === 'password' ? `${baseInputClasses} pr-12` : baseInputClasses,
       maxLength,
@@ -180,6 +180,9 @@ export const FormField: React.FC<FormFieldProps> = ({
         );
       
       case 'date':
+        if (useCalendarPicker) {
+          return null; // DatePicker will be rendered outside renderInput
+        }
         return (
           <div className={`date-input custom-style relative ${hasError ? 'error' : hasSuccess ? 'success' : ''}`}>
             <input
@@ -230,6 +233,31 @@ export const FormField: React.FC<FormFieldProps> = ({
     }
   };
 
+  // If using calendar picker for date type, render DatePicker component instead
+  if (type === 'date' && useCalendarPicker) {
+    return (
+      <DatePicker
+        label={label}
+        value={String(value)}
+        onChange={onChange}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        placeholder={placeholder}
+        required={required}
+        error={error}
+        success={success}
+        disabled={disabled}
+        className={className}
+        autoComplete={autoComplete}
+        aria-describedby={ariaDescribedBy}
+        helpText={helpText}
+        loading={loading}
+        minDate={min ? new Date(min) : undefined}
+        maxDate={max ? new Date(max) : undefined}
+      />
+    );
+  }
+
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
@@ -243,23 +271,7 @@ export const FormField: React.FC<FormFieldProps> = ({
           {required && <span className="text-red-500 ml-1" aria-label="requerido">*</span>}
         </label>
         
-        {tooltip && (
-          <div className="relative group">
-            <Info 
-              className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help transition-colors" 
-              aria-describedby={tooltipId}
-            />
-            <div 
-              id={tooltipId}
-              className="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap max-w-xs"
-              role="tooltip"
-            >
-              {tooltip}
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-            </div>
-          </div>
-        )}
-
+        
         {showCharCount && (
           <span className={`text-xs ml-auto ${
             charCount > maxLength! * 0.9 ? 'text-orange-500' : 'text-gray-500'

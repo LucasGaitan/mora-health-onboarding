@@ -105,11 +105,10 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
       onNext={onNext}
       onPrevious={onPrevious}
       canGoNext={isValid}
-      autoSave
       completionPercentage={completionPercentage}
       estimatedTime="5-7 min"
       stepNumber={5}
-      totalSteps={8}
+      totalSteps={7}
     >
       <div className="space-y-8">
        
@@ -215,7 +214,6 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
               required
               error={!data.startDate ? 'Selecciona cuándo podrías comenzar' : undefined}
               success={!!data.startDate}
-              tooltip="Esto nos ayuda a planificar tu proceso de migración y documentación"
               helpText="El proceso típico de visa toma 6-12 meses"
             />
 
@@ -237,7 +235,6 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
               required
               error={!data.salaryExpectations ? 'Selecciona tus expectativas salariales' : undefined}
               success={!!data.salaryExpectations}
-              tooltip="Los salarios varían según estado, especialidad y experiencia"
               helpText="Salario promedio para enfermeras RN: $75,000-$95,000"
             />
           </div>

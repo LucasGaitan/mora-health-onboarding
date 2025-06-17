@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, Save, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface StepWrapperProps {
   title: string;
@@ -12,7 +12,6 @@ interface StepWrapperProps {
   isLast?: boolean;
   nextButtonText?: string;
   isLoading?: boolean;
-  autoSave?: boolean;
   completionPercentage?: number;
   estimatedTime?: string;
   stepNumber?: number;
@@ -30,35 +29,14 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
   isLast = false,
   nextButtonText = 'Continuar',
   isLoading = false,
-  autoSave = false,
   completionPercentage = 0
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [showSaveIndicator, setShowSaveIndicator] = useState(false);
-  const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(timer);
   }, []);
-
-  useEffect(() => {
-    if (autoSave && completionPercentage > 0) {
-      setShowSaveIndicator(true);
-      setLastSaveTime(new Date());
-      const timer = setTimeout(() => setShowSaveIndicator(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [autoSave, completionPercentage]);
-
-  const formatLastSaveTime = (date: Date) => {
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
-    if (diffInSeconds < 60) return 'hace unos segundos';
-    if (diffInSeconds < 3600) return `hace ${Math.floor(diffInSeconds / 60)} min`;
-    return `hace ${Math.floor(diffInSeconds / 3600)} h`;
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && e.ctrlKey && canGoNext && !isLoading) {
@@ -89,21 +67,7 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
             )}
           </div>
           
-          {/* Auto-save indicator */}
-          <div className="flex flex-col items-end gap-2">
-            {showSaveIndicator && (
-              <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 px-3 py-2 rounded-full animate-in slide-in-from-top duration-300 shadow-sm">
-                <Save className="w-4 h-4 animate-pulse" />
-                <span className="font-medium">Guardado automáticamente</span>
-              </div>
-            )}
-            {lastSaveTime && !showSaveIndicator && autoSave && (
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <CheckCircle className="w-3 h-3" />
-                Guardado {formatLastSaveTime(lastSaveTime)}
-              </div>
-            )}
-          </div>
+         
         </div>
         
         
@@ -182,7 +146,6 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
       {/* Accessibility improvements */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {isLoading && "Procesando información del paso"}
-        {showSaveIndicator && "Información guardada automáticamente"}
         {completionPercentage === 100 && "Paso completado al 100%"}
       </div>
     </div>

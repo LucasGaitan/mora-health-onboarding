@@ -1,5 +1,6 @@
 import React from 'react';
 import { StepWrapper } from '../StepWrapper';
+import { FormField } from '../ui/FormField';
 import { WorkExperience } from '../../types/onboarding';
 import { Plus, X } from 'lucide-react';
 
@@ -114,30 +115,26 @@ export const WorkExperienceStep: React.FC<WorkExperienceStepProps> = ({
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Fecha de inicio
-            </label>
-            <input
-              type="date"
-              value={data.startDate}
-              onChange={(e) => updateData({ startDate: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            />
-          </div>
+          <FormField
+            label="Fecha de inicio"
+            type="date"
+            value={data.startDate || ''}
+            onChange={(value) => updateData({ startDate: value })}
+            placeholder="Selecciona la fecha de inicio"
+            useCalendarPicker={true}
+            helpText="Fecha en que comenzaste a trabajar en esta institución"
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Fecha de fin {data.currentlyWorking && '(opcional si trabajas actualmente)'}
-            </label>
-            <input
-              type="date"
-              value={data.endDate}
-              onChange={(e) => updateData({ endDate: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              disabled={data.currentlyWorking}
-            />
-          </div>
+          <FormField
+            label={`Fecha de fin ${data.currentlyWorking ? '(opcional si trabajas actualmente)' : ''}`}
+            type="date"
+            value={data.endDate || ''}
+            onChange={(value) => updateData({ endDate: value })}
+            placeholder="Selecciona la fecha de fin"
+            disabled={data.currentlyWorking}
+            useCalendarPicker={true}
+            helpText={data.currentlyWorking ? "Puedes dejarlo vacío si aún trabajas aquí" : "Fecha en que terminaste de trabajar en esta institución"}
+          />
         </div>
 
         <div>
