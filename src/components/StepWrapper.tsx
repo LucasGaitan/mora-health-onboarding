@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface StepWrapperProps {

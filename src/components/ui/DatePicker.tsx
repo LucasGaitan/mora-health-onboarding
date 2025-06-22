@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Calendar from 'react-calendar';
 import { Calendar as CalendarIcon, AlertCircle, CheckCircle } from 'lucide-react';
 import 'react-calendar/dist/Calendar.css';
@@ -70,7 +70,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   
   // Set reasonable defaults for birth date fields
   const isLikelyBirthDate = label.toLowerCase().includes('nacimiento') || label.toLowerCase().includes('birth');
-  const defaultMaxDate = isLikelyBirthDate ? new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()) : undefined;
   const defaultMinDate = isLikelyBirthDate ? new Date(1900, 0, 1) : undefined;
   
   // Format date for display
@@ -115,6 +114,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       onChange(dateString);
       setIsOpen(false);
       setTouched(true);
+      
+      // Trigger validation immediately after selection
+      setTimeout(() => {
+        onBlur?.();
+      }, 0);
     }
   };
   
@@ -238,7 +242,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               onChange={handleCalendarChange}
               value={dateValue}
               minDate={minDate || defaultMinDate}
-              maxDate={maxDate || defaultMaxDate}
+              maxDate={maxDate}
               locale="es-ES"
               className="react-calendar-custom"
               calendarType="gregory"

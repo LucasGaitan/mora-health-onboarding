@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X, Mail, Phone, Calendar } from 'lucide-react';
 
 interface SuccessModalProps {

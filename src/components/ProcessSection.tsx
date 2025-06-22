@@ -1,10 +1,8 @@
-import React from 'react';
-
 interface ProcessSectionProps {
   onStartJourney: () => void;
 }
 
-export const ProcessSection: React.FC<ProcessSectionProps> = ({ onStartJourney }) => {
+export const ProcessSection: React.FC<ProcessSectionProps> = ({ onStartJourney }: ProcessSectionProps) => {
   const processSteps = [
     {
       number: '01',

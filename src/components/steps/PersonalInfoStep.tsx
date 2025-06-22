@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StepWrapper } from '../StepWrapper';
 import { FormField } from '../ui/FormField';
 import { FormSection } from '../ui/FormSection';
@@ -67,8 +67,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   const handleFieldChange = (field: keyof PersonalInfo, value: string) => {
     updateData({ [field]: value });
     
-    // Real-time validation for touched fields
-    if (touched[field]) {
+    // Real-time validation for touched fields, or always for date fields
+    if (touched[field] || field === 'dateOfBirth') {
       setIsValidating(true);
       setTimeout(() => {
         const error = validateField(field, value);
@@ -85,8 +85,9 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   };
 
   const handleFieldFocus = (field: keyof PersonalInfo) => {
-    // Clear error on focus to encourage user to try again
-    if (errors[field]) {
+    // Don't clear errors for date fields when focusing (opening calendar)
+    // as this creates confusion when the field turns green while having an invalid date
+    if (field !== 'dateOfBirth' && errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
@@ -153,7 +154,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               label="Nombre"
               type="text"
               value={data.firstName}
-              onChange={(value) => handleFieldChange('firstName', value)}
+              onChange={(value: string) => handleFieldChange('firstName', value)}
               onBlur={() => handleFieldBlur('firstName')}
               onFocus={() => handleFieldFocus('firstName')}
               placeholder="Tu nombre"
@@ -170,7 +171,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               label="Apellidos"
               type="text"
               value={data.lastName}
-              onChange={(value) => handleFieldChange('lastName', value)}
+              onChange={(value: string) => handleFieldChange('lastName', value)}
               onBlur={() => handleFieldBlur('lastName')}
               onFocus={() => handleFieldFocus('lastName')}
               placeholder="Tus apellidos"
@@ -186,7 +187,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               label="Fecha de nacimiento"
               type="date"
               value={data.dateOfBirth}
-              onChange={(value) => handleFieldChange('dateOfBirth', value)}
+              onChange={(value: string) => handleFieldChange('dateOfBirth', value)}
               onBlur={() => handleFieldBlur('dateOfBirth')}
               onFocus={() => handleFieldFocus('dateOfBirth')}
               required
@@ -201,7 +202,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               label="Nacionalidad"
               type="select"
               value={data.nationality}
-              onChange={(value) => handleFieldChange('nationality', value)}
+              onChange={(value: string) => handleFieldChange('nationality', value)}
               onBlur={() => handleFieldBlur('nationality')}
               onFocus={() => handleFieldFocus('nationality')}
               placeholder="Selecciona tu nacionalidad"
@@ -225,7 +226,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               label="Correo electrónico"
               type="email"
               value={data.email}
-              onChange={(value) => handleFieldChange('email', value)}
+              onChange={(value: string) => handleFieldChange('email', value)}
               onBlur={() => handleFieldBlur('email')}
               onFocus={() => handleFieldFocus('email')}
               placeholder="tu@email.com"
@@ -241,7 +242,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               label="Teléfono"
               type="tel"
               value={data.phone}
-              onChange={(value) => handleFieldChange('phone', value)}
+              onChange={(value: string) => handleFieldChange('phone', value)}
               onBlur={() => handleFieldBlur('phone')}
               onFocus={() => handleFieldFocus('phone')}
               placeholder="+52 555 123 4567"
@@ -266,7 +267,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               label="País actual"
               type="select"
               value={data.currentCountry}
-              onChange={(value) => handleFieldChange('currentCountry', value)}
+              onChange={(value: string) => handleFieldChange('currentCountry', value)}
               onBlur={() => handleFieldBlur('currentCountry')}
               onFocus={() => handleFieldFocus('currentCountry')}
               placeholder="Selecciona tu país actual"
@@ -281,7 +282,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               label="Ciudad actual"
               type="text"
               value={data.currentCity}
-              onChange={(value) => handleFieldChange('currentCity', value)}
+              onChange={(value: string) => handleFieldChange('currentCity', value)}
               onBlur={() => handleFieldBlur('currentCity')}
               onFocus={() => handleFieldFocus('currentCity')}
               placeholder="Tu ciudad actual"

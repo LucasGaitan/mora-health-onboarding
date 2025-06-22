@@ -1,5 +1,5 @@
-import React from 'react';
 import { StepWrapper } from '../StepWrapper';
+import { FormField } from '../ui/FormField';
 import { ProfessionalInfo } from '../../types/onboarding';
 import { Plus, X } from 'lucide-react';
 
@@ -118,30 +118,27 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Número de cédula profesional *
-            </label>
-            <input
-              type="text"
-              value={data.nursingLicense}
-              onChange={(e) => updateData({ nursingLicense: e.target.value })}
-              className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-lg"
-              placeholder="Número de cédula"
-            />
-          </div>
+          <FormField
+            label="Número de cédula profesional"
+            type="text"
+            value={data.nursingLicense}
+            onChange={(value: string) => updateData({ nursingLicense: value })}
+            placeholder="Número de cédula"
+            required
+            autoComplete="off"
+            helpText="Ingresa tu número de cédula profesional"
+          />
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Vigencia de la licencia *
-            </label>
-            <input
-              type="date"
-              value={data.licenseExpiry}
-              onChange={(e) => updateData({ licenseExpiry: e.target.value })}
-              className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-lg"
-            />
-          </div>
+          <FormField
+            label="Vigencia de la licencia"
+            type="date"
+            value={data.licenseExpiry}
+            onChange={(value: string) => updateData({ licenseExpiry: value })}
+            required
+            useCalendarPicker={true}
+            helpText="Fecha de vencimiento de tu licencia profesional"
+            autoComplete="off"
+          />
         </div>
 
         <div>

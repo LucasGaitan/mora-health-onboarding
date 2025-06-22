@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AlertCircle, CheckCircle, Eye, EyeOff, Calendar } from 'lucide-react';
 import { DatePicker } from './DatePicker';
 

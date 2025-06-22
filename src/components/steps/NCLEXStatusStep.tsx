@@ -1,4 +1,3 @@
-import React from 'react';
 import { StepWrapper } from '../StepWrapper';
 import { NCLEXStatus } from '../../types/onboarding';
 import { Plus, X } from 'lucide-react';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { StepWrapper } from '../StepWrapper';
 import { OnboardingData } from '../../types/onboarding';
 import { User, Briefcase, Globe, Stethoscope, MapPin, GraduationCap, CheckCircle, Send } from 'lucide-react';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { StepWrapper } from '../StepWrapper';
 import { EnglishProficiency } from '../../types/onboarding';
 

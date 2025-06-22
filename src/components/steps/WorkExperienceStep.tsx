@@ -1,4 +1,3 @@
-import React from 'react';
 import { StepWrapper } from '../StepWrapper';
 import { FormField } from '../ui/FormField';
 import { WorkExperience } from '../../types/onboarding';
@@ -119,7 +118,7 @@ export const WorkExperienceStep: React.FC<WorkExperienceStepProps> = ({
             label="Fecha de inicio"
             type="date"
             value={data.startDate || ''}
-            onChange={(value) => updateData({ startDate: value })}
+            onChange={(value: string) => updateData({ startDate: value })}
             placeholder="Selecciona la fecha de inicio"
             useCalendarPicker={true}
             helpText="Fecha en que comenzaste a trabajar en esta institución"
@@ -129,7 +128,7 @@ export const WorkExperienceStep: React.FC<WorkExperienceStepProps> = ({
             label={`Fecha de fin ${data.currentlyWorking ? '(opcional si trabajas actualmente)' : ''}`}
             type="date"
             value={data.endDate || ''}
-            onChange={(value) => updateData({ endDate: value })}
+            onChange={(value: string) => updateData({ endDate: value })}
             placeholder="Selecciona la fecha de fin"
             disabled={data.currentlyWorking}
             useCalendarPicker={true}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { StepWrapper } from '../StepWrapper';
 import { FormField } from '../ui/FormField';
 import { FormSection } from '../ui/FormSection';
@@ -123,7 +122,7 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
             label="Estados de preferencia"
             options={usStates}
             selected={data.preferredStates}
-            onChange={(selected) => updateData({ preferredStates: selected })}
+            onChange={(selected: string[]) => updateData({ preferredStates: selected })}
             placeholder="Busca y selecciona los estados donde te gustaría trabajar"
             required
             searchable
@@ -142,7 +141,7 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
             label="Tipos de hospital preferidos"
             options={hospitalTypes}
             selected={data.hospitalTypes}
-            onChange={(selected) => updateData({ hospitalTypes: selected })}
+            onChange={(selected: string[]) => updateData({ hospitalTypes: selected })}
             placeholder="Selecciona los tipos de hospital que te interesan"
             required
             error={data.hospitalTypes.length === 0 ? 'Selecciona al menos un tipo de hospital' : undefined}
@@ -158,7 +157,7 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
             label="Entornos de trabajo preferidos"
             options={workSettings}
             selected={data.workSettings}
-            onChange={(selected) => updateData({ workSettings: selected })}
+            onChange={(selected: string[]) => updateData({ workSettings: selected })}
             placeholder="Selecciona tus entornos de trabajo preferidos"
             required
             error={data.workSettings.length === 0 ? 'Selecciona al menos un entorno de trabajo' : undefined}
@@ -185,7 +184,7 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
             label="Preferencias de turno"
             options={shiftOptions}
             selected={data.shiftPreferences}
-            onChange={(selected) => updateData({ shiftPreferences: selected })}
+            onChange={(selected: string[]) => updateData({ shiftPreferences: selected })}
             placeholder="Selecciona tus preferencias de turno"
             required
             error={data.shiftPreferences.length === 0 ? 'Selecciona al menos una preferencia de turno' : undefined}
@@ -202,7 +201,7 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
               label="¿Cuándo podrías comenzar a trabajar?"
               type="select"
               value={data.startDate}
-              onChange={(value) => updateData({ startDate: value })}
+              onChange={(value: string) => updateData({ startDate: value })}
               placeholder="Selecciona tu disponibilidad"
               options={[
                 { value: 'inmediato', label: 'Inmediatamente (ya tengo visa)' },
@@ -221,7 +220,7 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
               label="Expectativas salariales (USD anuales)"
               type="select"
               value={data.salaryExpectations}
-              onChange={(value) => updateData({ salaryExpectations: value })}
+              onChange={(value: string) => updateData({ salaryExpectations: value })}
               placeholder="Selecciona rango salarial esperado"
               options={[
                 { value: '50000-60000', label: '$50,000 - $60,000' },
