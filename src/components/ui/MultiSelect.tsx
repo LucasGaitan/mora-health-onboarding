@@ -55,7 +55,6 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         {required && <span className="text-red-500 ml-1" aria-label="required">*</span>}
       </label>
 
-      {/* Selected items */}
       {selected.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {selected.map((item, index) => (
@@ -76,7 +75,6 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         </div>
       )}
 
-      {/* Search input */}
       {searchable && (
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -90,7 +88,6 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         </div>
       )}
 
-      {/* Available options */}
       <div className="space-y-2">
         {!isExpanded && filteredOptions.length > 6 && (
           <button
@@ -124,14 +121,12 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         )}
       </div>
 
-      {/* Empty state */}
       {filteredOptions.length === 0 && searchable && searchTerm && (
         <div className="text-center py-4 text-gray-500 text-sm">
           No se encontraron opciones para "{searchTerm}"
         </div>
       )}
 
-      {/* Error message */}
       {error && (
         <div className="flex items-center gap-2 text-sm text-red-600 animate-in slide-in-from-top-1 duration-200">
           <X className="w-4 h-4 flex-shrink-0" />
@@ -139,7 +134,6 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         </div>
       )}
 
-      {/* Helper text */}
       {selected.length === 0 && (
         <p className="text-sm text-gray-500">
           {placeholder}

@@ -2,43 +2,32 @@ import { StepWrapper } from '../StepWrapper';
 import { FormField } from '../ui/FormField';
 import { FormSection } from '../ui/FormSection';
 import { MultiSelect } from '../ui/MultiSelect';
-import { USPreferences } from '../../types/onboarding';
+import { useOnboardingStore } from '../../store/onboardingStore';
 import { MapPin, Building, Clock, DollarSign, Star } from 'lucide-react';
 
-interface USPreferencesStepProps {
-  data: USPreferences;
-  updateData: (data: Partial<USPreferences>) => void;
-  onNext: () => void;
-  onPrevious: () => void;
-}
-
-export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
-  data,
-  updateData,
-  onNext,
-  onPrevious
-}) => {
+export const USPreferencesStep: React.FC = () => {
+  const { data, updateUSPreferences, nextStep, previousStep } = useOnboardingStore();
+  const preferencesData = data.usPreferences;
 
   const isValid = Boolean(
-    data.preferredStates.length > 0 && data.hospitalTypes.length > 0 && 
-    data.workSettings.length > 0 && data.shiftPreferences.length > 0 && 
-    data.startDate && data.salaryExpectations
+    preferencesData.preferredStates.length > 0 && preferencesData.hospitalTypes.length > 0 && 
+    preferencesData.workSettings.length > 0 && preferencesData.shiftPreferences.length > 0 && 
+    preferencesData.startDate && preferencesData.salaryExpectations
   );
 
   const completionPercentage = (() => {
     const requirements = [
-      data.preferredStates.length > 0,
-      data.hospitalTypes.length > 0,
-      data.workSettings.length > 0,
-      data.shiftPreferences.length > 0,
-      !!data.startDate,
-      !!data.salaryExpectations
+      preferencesData.preferredStates.length > 0,
+      preferencesData.hospitalTypes.length > 0,
+      preferencesData.workSettings.length > 0,
+      preferencesData.shiftPreferences.length > 0,
+      !!preferencesData.startDate,
+      !!preferencesData.salaryExpectations
     ];
     const completed = requirements.filter(Boolean).length;
     return (completed / requirements.length) * 100;
   })();
 
-  // Enhanced US states with popular destinations for international nurses
   const usStates = [
     'California', 'Texas', 'Florida', 'New York', 'Pennsylvania', 'Illinois',
     'Ohio', 'Georgia', 'North Carolina', 'Michigan', 'New Jersey', 'Virginia',
@@ -95,14 +84,12 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
     'Solo días laborables'
   ];
 
-
-
   return (
     <StepWrapper
       title="Preferencias para Estados Unidos"
       subtitle="Ayúdanos a encontrar la oportunidad perfecta que se adapte a tus necesidades y objetivos profesionales"
-      onNext={onNext}
-      onPrevious={onPrevious}
+      onNext={nextStep}
+      onPrevious={previousStep}
       canGoNext={isValid}
       completionPercentage={completionPercentage}
       estimatedTime="5-7 min"
@@ -110,8 +97,6 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
       totalSteps={7}
     >
       <div className="space-y-8">
-       
-
         <FormSection
           title="Ubicación preferida"
           description="¿En qué estados te gustaría trabajar? Puedes seleccionar múltiples opciones para aumentar tus oportunidades."
@@ -121,15 +106,14 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
           <MultiSelect
             label="Estados de preferencia"
             options={usStates}
-            selected={data.preferredStates}
-            onChange={(selected: string[]) => updateData({ preferredStates: selected })}
+            selected={preferencesData.preferredStates}
+            onChange={(selected: string[]) => updateUSPreferences({ preferredStates: selected })}
             placeholder="Busca y selecciona los estados donde te gustaría trabajar"
             required
             searchable
-            error={data.preferredStates.length === 0 ? 'Selecciona al menos un estado donde te gustaría trabajar' : undefined}
+            error={preferencesData.preferredStates.length === 0 ? 'Selecciona al menos un estado donde te gustaría trabajar' : undefined}
             maxHeight="max-h-60"
           />
-          
         </FormSection>
 
         <FormSection
@@ -140,11 +124,11 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
           <MultiSelect
             label="Tipos de hospital preferidos"
             options={hospitalTypes}
-            selected={data.hospitalTypes}
-            onChange={(selected: string[]) => updateData({ hospitalTypes: selected })}
+            selected={preferencesData.hospitalTypes}
+            onChange={(selected: string[]) => updateUSPreferences({ hospitalTypes: selected })}
             placeholder="Selecciona los tipos de hospital que te interesan"
             required
-            error={data.hospitalTypes.length === 0 ? 'Selecciona al menos un tipo de hospital' : undefined}
+            error={preferencesData.hospitalTypes.length === 0 ? 'Selecciona al menos un tipo de hospital' : undefined}
           />
         </FormSection>
 
@@ -156,19 +140,19 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
           <MultiSelect
             label="Entornos de trabajo preferidos"
             options={workSettings}
-            selected={data.workSettings}
-            onChange={(selected: string[]) => updateData({ workSettings: selected })}
+            selected={preferencesData.workSettings}
+            onChange={(selected: string[]) => updateUSPreferences({ workSettings: selected })}
             placeholder="Selecciona tus entornos de trabajo preferidos"
             required
-            error={data.workSettings.length === 0 ? 'Selecciona al menos un entorno de trabajo' : undefined}
+            error={preferencesData.workSettings.length === 0 ? 'Selecciona al menos un entorno de trabajo' : undefined}
             searchable
           />
           
-          {data.workSettings.length > 0 && (
+          {preferencesData.workSettings.length > 0 && (
             <div className="mt-4 p-3 bg-purple-50 rounded-lg">
               <p className="text-sm text-purple-700">
-                <strong>Seleccionaste:</strong> {data.workSettings.join(', ')}. 
-                {data.workSettings.includes('Unidad de Cuidados Intensivos (ICU)') && 
+                <strong>Seleccionaste:</strong> {preferencesData.workSettings.join(', ')}. 
+                {preferencesData.workSettings.includes('Unidad de Cuidados Intensivos (ICU)') && 
                   ' ICU es una especialidad muy demandada con excelentes oportunidades salariales.'}
               </p>
             </div>
@@ -183,11 +167,11 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
           <MultiSelect
             label="Preferencias de turno"
             options={shiftOptions}
-            selected={data.shiftPreferences}
-            onChange={(selected: string[]) => updateData({ shiftPreferences: selected })}
+            selected={preferencesData.shiftPreferences}
+            onChange={(selected: string[]) => updateUSPreferences({ shiftPreferences: selected })}
             placeholder="Selecciona tus preferencias de turno"
             required
-            error={data.shiftPreferences.length === 0 ? 'Selecciona al menos una preferencia de turno' : undefined}
+            error={preferencesData.shiftPreferences.length === 0 ? 'Selecciona al menos una preferencia de turno' : undefined}
           />
         </FormSection>
 
@@ -200,8 +184,8 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
             <FormField
               label="¿Cuándo podrías comenzar a trabajar?"
               type="select"
-              value={data.startDate}
-              onChange={(value: string) => updateData({ startDate: value })}
+              value={preferencesData.startDate}
+              onChange={(value: string) => updateUSPreferences({ startDate: value })}
               placeholder="Selecciona tu disponibilidad"
               options={[
                 { value: 'inmediato', label: 'Inmediatamente (ya tengo visa)' },
@@ -211,16 +195,16 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
                 { value: 'mas-12-meses', label: 'Más de 12 meses' }
               ]}
               required
-              error={!data.startDate ? 'Selecciona cuándo podrías comenzar' : undefined}
-              success={!!data.startDate}
+              error={!preferencesData.startDate ? 'Selecciona cuándo podrías comenzar' : undefined}
+              success={!!preferencesData.startDate}
               helpText="El proceso típico de visa toma 6-12 meses"
             />
 
             <FormField
               label="Expectativas salariales (USD anuales)"
               type="select"
-              value={data.salaryExpectations}
-              onChange={(value: string) => updateData({ salaryExpectations: value })}
+              value={preferencesData.salaryExpectations}
+              onChange={(value: string) => updateUSPreferences({ salaryExpectations: value })}
               placeholder="Selecciona rango salarial esperado"
               options={[
                 { value: '50000-60000', label: '$50,000 - $60,000' },
@@ -232,16 +216,13 @@ export const USPreferencesStep: React.FC<USPreferencesStepProps> = ({
                 { value: '120000+', label: '$120,000+' }
               ]}
               required
-              error={!data.salaryExpectations ? 'Selecciona tus expectativas salariales' : undefined}
-              success={!!data.salaryExpectations}
+              error={!preferencesData.salaryExpectations ? 'Selecciona tus expectativas salariales' : undefined}
+              success={!!preferencesData.salaryExpectations}
               helpText="Salario promedio para enfermeras RN: $75,000-$95,000"
             />
           </div>
-          
-          
         </FormSection>
 
-        {/* Progress encouragement */}
         {completionPercentage === 100 && (
           <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
             <div className="flex items-center gap-3">

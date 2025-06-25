@@ -3,21 +3,13 @@ import { StepWrapper } from '../StepWrapper';
 import { FormField } from '../ui/FormField';
 import { FormSection } from '../ui/FormSection';
 import { PersonalInfo } from '../../types/onboarding';
+import { useOnboardingStore } from '../../store/onboardingStore';
 import { User, MapPin, Mail } from 'lucide-react';
 
-interface PersonalInfoStepProps {
-  data: PersonalInfo;
-  updateData: (data: Partial<PersonalInfo>) => void;
-  onNext: () => void;
-  onPrevious: () => void;
-}
-
-export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
-  data,
-  updateData,
-  onNext,
-  onPrevious
-}) => {
+export const PersonalInfoStep: React.FC = () => {
+  const { data, updatePersonalInfo, nextStep, previousStep } = useOnboardingStore();
+  const personalData = data.personalInfo;
+  
   const [errors, setErrors] = useState<Partial<PersonalInfo>>({});
   const [touched, setTouched] = useState<Partial<Record<keyof PersonalInfo, boolean>>>({});
   const [isValidating, setIsValidating] = useState(false);
@@ -65,42 +57,39 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   };
 
   const handleFieldChange = (field: keyof PersonalInfo, value: string) => {
-    updateData({ [field]: value });
+    updatePersonalInfo({ [field]: value });
     
-    // Real-time validation for touched fields, or always for date fields
     if (touched[field] || field === 'dateOfBirth') {
       setIsValidating(true);
       setTimeout(() => {
         const error = validateField(field, value);
         setErrors(prev => ({ ...prev, [field]: error }));
         setIsValidating(false);
-      }, 300); // Small delay for better UX
+      }, 300);
     }
   };
 
   const handleFieldBlur = (field: keyof PersonalInfo) => {
     setTouched(prev => ({ ...prev, [field]: true }));
-    const error = validateField(field, data[field]);
+    const error = validateField(field, personalData[field]);
     setErrors(prev => ({ ...prev, [field]: error }));
   };
 
   const handleFieldFocus = (field: keyof PersonalInfo) => {
-    // Don't clear errors for date fields when focusing (opening calendar)
-    // as this creates confusion when the field turns green while having an invalid date
     if (field !== 'dateOfBirth' && errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
   const isValid = Boolean(
-    data.firstName && data.lastName && data.email && data.phone && 
-    data.dateOfBirth && data.nationality && data.currentCountry && data.currentCity &&
+    personalData.firstName && personalData.lastName && personalData.email && personalData.phone && 
+    personalData.dateOfBirth && personalData.nationality && personalData.currentCountry && personalData.currentCity &&
     Object.values(errors).every(error => !error)
   );
 
   const completionPercentage = (() => {
     const fields = ['firstName', 'lastName', 'email', 'phone', 'dateOfBirth', 'nationality', 'currentCountry', 'currentCity'];
-    const completedFields = fields.filter(field => data[field as keyof PersonalInfo]).length;
+    const completedFields = fields.filter(field => personalData[field as keyof PersonalInfo]).length;
     return (completedFields / fields.length) * 100;
   })();
 
@@ -132,8 +121,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     <StepWrapper
       title="Información Personal"
       subtitle="Comencemos conociendo un poco más sobre ti"
-      onNext={onNext}
-      onPrevious={onPrevious}
+      onNext={nextStep}
+      onPrevious={previousStep}
       canGoNext={isValid}
       isFirst={true}
       completionPercentage={completionPercentage}
@@ -142,8 +131,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       totalSteps={7}
     >
       <div className="space-y-8">
-
-        {/* Personal details */}
         <FormSection
           title="Datos personales"
           description="Información básica para tu perfil profesional"
@@ -153,14 +140,14 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             <FormField
               label="Nombre"
               type="text"
-              value={data.firstName}
+              value={personalData.firstName}
               onChange={(value: string) => handleFieldChange('firstName', value)}
               onBlur={() => handleFieldBlur('firstName')}
               onFocus={() => handleFieldFocus('firstName')}
               placeholder="Tu nombre"
               required
               error={errors.firstName}
-              success={!errors.firstName && !!data.firstName && !!touched.firstName}
+              success={!errors.firstName && !!personalData.firstName && !!touched.firstName}
               autoComplete="given-name"
               loading={isValidating && touched.firstName}
               maxLength={50}
@@ -170,14 +157,14 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             <FormField
               label="Apellidos"
               type="text"
-              value={data.lastName}
+              value={personalData.lastName}
               onChange={(value: string) => handleFieldChange('lastName', value)}
               onBlur={() => handleFieldBlur('lastName')}
               onFocus={() => handleFieldFocus('lastName')}
               placeholder="Tus apellidos"
               required
               error={errors.lastName}
-              success={!errors.lastName && !!data.lastName && !!touched.lastName}
+              success={!errors.lastName && !!personalData.lastName && !!touched.lastName}
               autoComplete="family-name"
               loading={isValidating && touched.lastName}
               maxLength={50}
@@ -186,13 +173,13 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             <FormField
               label="Fecha de nacimiento"
               type="date"
-              value={data.dateOfBirth}
+              value={personalData.dateOfBirth}
               onChange={(value: string) => handleFieldChange('dateOfBirth', value)}
               onBlur={() => handleFieldBlur('dateOfBirth')}
               onFocus={() => handleFieldFocus('dateOfBirth')}
               required
               error={errors.dateOfBirth}
-              success={!errors.dateOfBirth && !!data.dateOfBirth && !!touched.dateOfBirth}
+              success={!errors.dateOfBirth && !!personalData.dateOfBirth && !!touched.dateOfBirth}
               autoComplete="bday"
               helpText="Debes ser mayor de 18 años"
               useCalendarPicker={true}
@@ -201,7 +188,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             <FormField
               label="Nacionalidad"
               type="select"
-              value={data.nationality}
+              value={personalData.nationality}
               onChange={(value: string) => handleFieldChange('nationality', value)}
               onBlur={() => handleFieldBlur('nationality')}
               onFocus={() => handleFieldFocus('nationality')}
@@ -209,13 +196,12 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               options={nationalityOptions}
               required
               error={errors.nationality}
-              success={!errors.nationality && !!data.nationality && !!touched.nationality}
+              success={!errors.nationality && !!personalData.nationality && !!touched.nationality}
               autoComplete="country"
             />
           </div>
         </FormSection>
 
-        {/* Contact information */}
         <FormSection
           title="Información de contacto"
           description="¿Cómo podemos contactarte para las mejores oportunidades?"
@@ -225,14 +211,14 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             <FormField
               label="Correo electrónico"
               type="email"
-              value={data.email}
+              value={personalData.email}
               onChange={(value: string) => handleFieldChange('email', value)}
               onBlur={() => handleFieldBlur('email')}
               onFocus={() => handleFieldFocus('email')}
               placeholder="tu@email.com"
               required
               error={errors.email}
-              success={!errors.email && !!data.email && !!touched.email}
+              success={!errors.email && !!personalData.email && !!touched.email}
               autoComplete="email"
               loading={isValidating && touched.email}
               helpText="Asegúrate de que sea un correo que revises frecuentemente"
@@ -241,14 +227,14 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             <FormField
               label="Teléfono"
               type="tel"
-              value={data.phone}
+              value={personalData.phone}
               onChange={(value: string) => handleFieldChange('phone', value)}
               onBlur={() => handleFieldBlur('phone')}
               onFocus={() => handleFieldFocus('phone')}
               placeholder="+52 555 123 4567"
               required
               error={errors.phone}
-              success={!errors.phone && !!data.phone && !!touched.phone}
+              success={!errors.phone && !!personalData.phone && !!touched.phone}
               autoComplete="tel"
               loading={isValidating && touched.phone}
               helpText="Formato: +[código país] [número]. Ej: +52 555 123 4567"
@@ -256,7 +242,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
           </div>
         </FormSection>
 
-        {/* Location information */}
         <FormSection
           title="Ubicación actual"
           description="¿Dónde te encuentras actualmente?"
@@ -266,7 +251,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             <FormField
               label="País actual"
               type="select"
-              value={data.currentCountry}
+              value={personalData.currentCountry}
               onChange={(value: string) => handleFieldChange('currentCountry', value)}
               onBlur={() => handleFieldBlur('currentCountry')}
               onFocus={() => handleFieldFocus('currentCountry')}
@@ -274,29 +259,27 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               options={countryOptions}
               required
               error={errors.currentCountry}
-              success={!errors.currentCountry && !!data.currentCountry && !!touched.currentCountry}
+              success={!errors.currentCountry && !!personalData.currentCountry && !!touched.currentCountry}
               autoComplete="country"
             />
 
             <FormField
               label="Ciudad actual"
               type="text"
-              value={data.currentCity}
+              value={personalData.currentCity}
               onChange={(value: string) => handleFieldChange('currentCity', value)}
               onBlur={() => handleFieldBlur('currentCity')}
               onFocus={() => handleFieldFocus('currentCity')}
               placeholder="Tu ciudad actual"
               required
               error={errors.currentCity}
-              success={!errors.currentCity && !!data.currentCity && !!touched.currentCity}
+              success={!errors.currentCity && !!personalData.currentCity && !!touched.currentCity}
               autoComplete="address-level2"
               maxLength={100}
               helpText="Nombre completo de la ciudad"
             />
           </div>
         </FormSection>
-
-       
       </div>
     </StepWrapper>
   );

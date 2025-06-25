@@ -1,21 +1,12 @@
 import { StepWrapper } from '../StepWrapper';
-import { EnglishProficiency } from '../../types/onboarding';
+import { useOnboardingStore } from '../../store/onboardingStore';
 
-interface EnglishProficiencyStepProps {
-  data: EnglishProficiency;
-  updateData: (data: Partial<EnglishProficiency>) => void;
-  onNext: () => void;
-  onPrevious: () => void;
-}
+export const EnglishProficiencyStep: React.FC = () => {
+  const { data, updateEnglishProficiency, nextStep, previousStep } = useOnboardingStore();
+  const englishData = data.englishProficiency;
 
-export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
-  data,
-  updateData,
-  onNext,
-  onPrevious
-}) => {
-  const isValid = data.speakingLevel && data.listeningLevel && 
-    data.readingLevel && data.writingLevel && data.willingToTakeTest !== undefined;
+  const isValid = englishData.speakingLevel && englishData.listeningLevel && 
+    englishData.readingLevel && englishData.writingLevel && englishData.willingToTakeTest !== undefined;
 
   const proficiencyLevels = [
     { value: 'basico', label: 'Básico - Puedo comunicarme en situaciones sencillas' },
@@ -28,8 +19,8 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
     <StepWrapper
       title="Nivel de Inglés"
       subtitle="El inglés médico es fundamental para brindar atención de calidad en Estados Unidos"
-      onNext={onNext}
-      onPrevious={onPrevious}
+      onNext={nextStep}
+      onPrevious={previousStep}
       canGoNext={!!isValid}
     >
       <div className="space-y-8">
@@ -61,8 +52,8 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
                     type="radio"
                     name="speaking"
                     value={level.value}
-                    checked={data.speakingLevel === level.value}
-                    onChange={(e) => updateData({ speakingLevel: e.target.value })}
+                    checked={englishData.speakingLevel === level.value}
+                    onChange={(e) => updateEnglishProficiency({ speakingLevel: e.target.value })}
                     className="mr-3 mt-1 text-purple-600 focus:ring-purple-500"
                   />
                   <span className="text-sm text-gray-700 group-hover:text-gray-900 leading-relaxed">
@@ -84,8 +75,8 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
                     type="radio"
                     name="listening"
                     value={level.value}
-                    checked={data.listeningLevel === level.value}
-                    onChange={(e) => updateData({ listeningLevel: e.target.value })}
+                    checked={englishData.listeningLevel === level.value}
+                    onChange={(e) => updateEnglishProficiency({ listeningLevel: e.target.value })}
                     className="mr-3 mt-1 text-purple-600 focus:ring-purple-500"
                   />
                   <span className="text-sm text-gray-700 group-hover:text-gray-900 leading-relaxed">
@@ -107,8 +98,8 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
                     type="radio"
                     name="reading"
                     value={level.value}
-                    checked={data.readingLevel === level.value}
-                    onChange={(e) => updateData({ readingLevel: e.target.value })}
+                    checked={englishData.readingLevel === level.value}
+                    onChange={(e) => updateEnglishProficiency({ readingLevel: e.target.value })}
                     className="mr-3 mt-1 text-purple-600 focus:ring-purple-500"
                   />
                   <span className="text-sm text-gray-700 group-hover:text-gray-900 leading-relaxed">
@@ -130,8 +121,8 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
                     type="radio"
                     name="writing"
                     value={level.value}
-                    checked={data.writingLevel === level.value}
-                    onChange={(e) => updateData({ writingLevel: e.target.value })}
+                    checked={englishData.writingLevel === level.value}
+                    onChange={(e) => updateEnglishProficiency({ writingLevel: e.target.value })}
                     className="mr-3 mt-1 text-purple-600 focus:ring-purple-500"
                   />
                   <span className="text-sm text-gray-700 group-hover:text-gray-900 leading-relaxed">
@@ -151,17 +142,17 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
               <label className="flex items-center mb-4 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={data.hasIELTS}
-                  onChange={(e) => updateData({ hasIELTS: e.target.checked })}
+                  checked={englishData.hasIELTS}
+                  onChange={(e) => updateEnglishProficiency({ hasIELTS: e.target.checked })}
                   className="mr-3 text-purple-600 focus:ring-purple-500 rounded"
                 />
                 <span className="font-semibold text-gray-900">Tengo certificación IELTS</span>
               </label>
-              {data.hasIELTS && (
+              {englishData.hasIELTS && (
                 <input
                   type="text"
-                  value={data.ieltsScore}
-                  onChange={(e) => updateData({ ieltsScore: e.target.value })}
+                  value={englishData.ieltsScore}
+                  onChange={(e) => updateEnglishProficiency({ ieltsScore: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="Puntuación IELTS (ej: 7.0)"
                 />
@@ -172,17 +163,17 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
               <label className="flex items-center mb-4 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={data.hasTOEFL}
-                  onChange={(e) => updateData({ hasTOEFL: e.target.checked })}
+                  checked={englishData.hasTOEFL}
+                  onChange={(e) => updateEnglishProficiency({ hasTOEFL: e.target.checked })}
                   className="mr-3 text-purple-600 focus:ring-purple-500 rounded"
                 />
                 <span className="font-semibold text-gray-900">Tengo certificación TOEFL</span>
               </label>
-              {data.hasTOEFL && (
+              {englishData.hasTOEFL && (
                 <input
                   type="text"
-                  value={data.toeflScore}
-                  onChange={(e) => updateData({ toeflScore: e.target.value })}
+                  value={englishData.toeflScore}
+                  onChange={(e) => updateEnglishProficiency({ toeflScore: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   placeholder="Puntuación TOEFL (ej: 85)"
                 />
@@ -200,8 +191,8 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
               <input
                 type="radio"
                 name="willingToTakeTest"
-                checked={data.willingToTakeTest === true}
-                onChange={() => updateData({ willingToTakeTest: true })}
+                checked={englishData.willingToTakeTest === true}
+                onChange={() => updateEnglishProficiency({ willingToTakeTest: true })}
                 className="mr-3 text-purple-600 focus:ring-purple-500"
               />
               <span className="text-gray-700 group-hover:text-gray-900">
@@ -212,8 +203,8 @@ export const EnglishProficiencyStep: React.FC<EnglishProficiencyStepProps> = ({
               <input
                 type="radio"
                 name="willingToTakeTest"
-                checked={data.willingToTakeTest === false}
-                onChange={() => updateData({ willingToTakeTest: false })}
+                checked={englishData.willingToTakeTest === false}
+                onChange={() => updateEnglishProficiency({ willingToTakeTest: false })}
                 className="mr-3 text-purple-600 focus:ring-purple-500"
               />
               <span className="text-gray-700 group-hover:text-gray-900">

@@ -1,24 +1,16 @@
 import { StepWrapper } from '../StepWrapper';
-import { OnboardingData } from '../../types/onboarding';
+import { useOnboardingStore } from '../../store/onboardingStore';
 import { User, Briefcase, Globe, Stethoscope, MapPin, GraduationCap, CheckCircle, Send } from 'lucide-react';
 
-interface SummaryStepProps {
-  data: OnboardingData;
-  onPrevious: () => void;
-  onSubmit: () => void;
-}
+export const SummaryStep: React.FC = () => {
+  const { data, previousStep, handleSubmit } = useOnboardingStore();
 
-export const SummaryStep: React.FC<SummaryStepProps> = ({
-  data,
-  onPrevious,
-  onSubmit
-}) => {
   return (
     <StepWrapper
       title="Resumen de tu aplicación"
       subtitle="Revisa tu información antes de enviar tu aplicación a nuestro equipo"
-      onNext={onSubmit}
-      onPrevious={onPrevious}
+      onNext={handleSubmit}
+      onPrevious={previousStep}
       canGoNext={true}
       isLast={true}
       nextButtonText="Enviar aplicación"
@@ -39,7 +31,6 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Información Personal */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-3">
@@ -56,7 +47,6 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
             </div>
           </div>
 
-          {/* Información Profesional */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mr-3">
@@ -75,7 +65,6 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
             </div>
           </div>
 
-          {/* Nivel de Inglés */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-3">
@@ -97,7 +86,6 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
             </div>
           </div>
 
-          {/* Experiencia Laboral */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mr-3">
@@ -119,7 +107,6 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
             </div>
           </div>
 
-          {/* Preferencias US */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mr-3">
@@ -143,7 +130,6 @@ export const SummaryStep: React.FC<SummaryStepProps> = ({
             </div>
           </div>
 
-          {/* Estado NCLEX */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-center mb-4">
               <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-3">

@@ -26,7 +26,7 @@ interface FormFieldProps {
   maxLength?: number;
   pattern?: string;
   step?: number;
-  useCalendarPicker?: boolean; // New prop to enable react-calendar
+  useCalendarPicker?: boolean;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -66,16 +66,13 @@ export const FormField: React.FC<FormFieldProps> = ({
   const hasError = error && touched;
   const hasSuccess = success && touched && !error && value;
   
-  // Character count for text inputs with maxLength
   const showCharCount = maxLength && (type === 'text' || type === 'textarea') && focused;
   const charCount = typeof value === 'string' ? value.length : 0;
   
-  // Special handling for date inputs to avoid icon overlap
   const isDateType = type === 'date';
   const hasStatusIcon = !loading && (hasError || hasSuccess);
   const needsExtraPadding = isDateType && hasStatusIcon;
   
-  // Format date placeholder
   const getDatePlaceholder = () => {
     if (type === 'date') {
       return placeholder || 'dd/mm/aaaa';
@@ -83,7 +80,6 @@ export const FormField: React.FC<FormFieldProps> = ({
     return placeholder;
   };
   
-  // Check if date input has a valid value
   const hasDateValue = isDateType && value && value !== '' && value !== 'dd/mm/aaaa';
   
   const baseInputClasses = `
@@ -181,7 +177,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       
       case 'date':
         if (useCalendarPicker) {
-          return null; // DatePicker will be rendered outside renderInput
+          return null;
         }
         return (
           <div className={`date-input custom-style relative ${hasError ? 'error' : hasSuccess ? 'success' : ''}`}>
@@ -199,25 +195,18 @@ export const FormField: React.FC<FormFieldProps> = ({
               `}
               style={{
                 colorScheme: 'light',
+                WebkitAppearance: 'none',
+                MozAppearance: 'textfield'
               }}
             />
-            {/* Custom placeholder overlay - only shown when empty and not focused */}
+            
             {!hasDateValue && !focused && (
-              <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none text-base select-none z-1 font-normal">
+              <div className="absolute inset-0 flex items-center px-4 pointer-events-none z-10 text-gray-400">
                 {getDatePlaceholder()}
               </div>
             )}
-            {/* Custom calendar icon */}
-            <div className={`absolute top-1/2 transform -translate-y-1/2 pointer-events-none z-2 ${
-              hasStatusIcon ? 'right-12' : 'right-4'
-            }`}>
-              <Calendar className={`calendar-icon w-5 h-5 transition-all duration-200 ${
-                focused ? 'focused text-purple-500 scale-110' : 
-                hasError ? 'error text-red-400' : 
-                hasSuccess ? 'success text-green-500' : 
-                'text-gray-400'
-              }`} />
-            </div>
+            
+            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-20" />
           </div>
         );
       
@@ -233,7 +222,6 @@ export const FormField: React.FC<FormFieldProps> = ({
     }
   };
 
-  // If using calendar picker for date type, render DatePicker component instead
   if (type === 'date' && useCalendarPicker) {
     return (
       <DatePicker
@@ -252,28 +240,25 @@ export const FormField: React.FC<FormFieldProps> = ({
         aria-describedby={ariaDescribedBy}
         helpText={helpText}
         loading={loading}
-        minDate={min ? new Date(min) : undefined}
-        maxDate={max ? new Date(max) : undefined}
       />
     );
   }
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between">
         <label 
-          htmlFor={fieldId}
+          htmlFor={fieldId} 
           className={`block text-sm font-semibold transition-colors ${
-            focused ? 'text-purple-700' : hasError ? 'text-red-700' : 'text-gray-700'
+            hasError ? 'text-red-600' : hasSuccess ? 'text-green-600' : 'text-gray-700'
           }`}
         >
           {label}
-          {required && <span className="text-red-500 ml-1" aria-label="requerido">*</span>}
+          {required && <span className="text-red-500 ml-1" aria-label="required">*</span>}
         </label>
-        
-        
+
         {showCharCount && (
-          <span className={`text-xs ml-auto ${
+          <span className={`text-xs transition-colors ${
             charCount > maxLength! * 0.9 ? 'text-orange-500' : 'text-gray-500'
           }`}>
             {charCount}/{maxLength}
@@ -284,60 +269,46 @@ export const FormField: React.FC<FormFieldProps> = ({
       <div className="relative">
         {renderInput()}
         
-        {/* Status icons - positioned to avoid overlap with date picker */}
-        {type !== 'password' && type !== 'date' && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center">
-            {loading && (
-              <div className="w-5 h-5 border-2 border-purple-200 border-t-purple-600 rounded-full animate-spin" aria-hidden="true" />
-            )}
-            {!loading && hasError && (
-              <AlertCircle className="w-5 h-5 text-red-500" aria-hidden="true" />
-            )}
-            {!loading && hasSuccess && (
-              <CheckCircle className="w-5 h-5 text-green-500" aria-hidden="true" />
-            )}
+        {!loading && !isDateType && (hasError || hasSuccess) && (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            {hasError ? (
+              <AlertCircle className="w-5 h-5 text-red-500" />
+            ) : hasSuccess ? (
+              <CheckCircle className="w-5 h-5 text-green-500" />
+            ) : null}
           </div>
         )}
         
-        {/* Status icons for date inputs - positioned to avoid calendar icon */}
-        {type === 'date' && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center">
-            {loading && (
-              <div className="w-5 h-5 border-2 border-purple-200 border-t-purple-600 rounded-full animate-spin" aria-hidden="true" />
-            )}
-            {!loading && hasError && (
-              <AlertCircle className="w-5 h-5 text-red-500" aria-hidden="true" />
-            )}
-            {!loading && hasSuccess && (
-              <CheckCircle className="w-5 h-5 text-green-500" aria-hidden="true" />
-            )}
+        {!loading && isDateType && (hasError || hasSuccess) && (
+          <div className="absolute right-10 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            {hasError ? (
+              <AlertCircle className="w-5 h-5 text-red-500" />
+            ) : hasSuccess ? (
+              <CheckCircle className="w-5 h-5 text-green-500" />
+            ) : null}
           </div>
         )}
       </div>
       
-      {/* Help text */}
       {helpText && !hasError && (
-        <div 
+        <p 
           id={helpId}
-          className="text-sm text-gray-600"
+          className="text-sm text-gray-500 leading-relaxed"
         >
           {helpText}
-        </div>
+        </p>
       )}
       
-      {/* Error message */}
       {hasError && (
         <div 
           id={errorId}
           className="flex items-center gap-2 text-sm text-red-600 animate-in slide-in-from-top-1 duration-200"
           role="alert"
-          aria-live="polite"
         >
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           {error}
         </div>
       )}
-      
     </div>
   );
 }; 

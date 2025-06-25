@@ -1,9 +1,6 @@
-import { useState, useEffect } from 'react';
 import { StepIndicator } from './components/StepIndicator';
 import { ProcessSection } from './components/ProcessSection';
-
 import { SuccessModal } from './components/SuccessModal';
-
 import { PersonalInfoStep } from './components/steps/PersonalInfoStep';
 import { ProfessionalInfoStep } from './components/steps/ProfessionalInfoStep';
 import { WorkExperienceStep } from './components/steps/WorkExperienceStep';
@@ -11,303 +8,43 @@ import { EnglishProficiencyStep } from './components/steps/EnglishProficiencySte
 import { USPreferencesStep } from './components/steps/USPreferencesStep';
 import { NCLEXStatusStep } from './components/steps/NCLEXStatusStep';
 import { SummaryStep } from './components/steps/SummaryStep';
-import { OnboardingData } from './types/onboarding';
-
-const initialData: OnboardingData = {
-  personalInfo: {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    dateOfBirth: '',
-    nationality: '',
-    currentCountry: '',
-    currentCity: ''
-  },
-  professionalInfo: {
-    nursingDegree: '',
-    graduationYear: '',
-    nursingSchool: '',
-    nursingLicense: '',
-    licenseExpiry: '',
-    specializations: [],
-    yearsOfExperience: ''
-  },
-  workExperience: {
-    currentlyWorking: true,
-    hospitalName: '',
-    position: '',
-    startDate: '',
-    endDate: '',
-    responsibilities: '',
-    clinicalAreas: []
-  },
-  englishProficiency: {
-    speakingLevel: '',
-    listeningLevel: '',
-    readingLevel: '',
-    writingLevel: '',
-    hasIELTS: false,
-    ieltsScore: '',
-    hasTOEFL: false,
-    toeflScore: '',
-    willingToTakeTest: true
-  },
-  usPreferences: {
-    preferredStates: [],
-    hospitalTypes: [],
-    workSettings: [],
-    shiftPreferences: [],
-    startDate: '',
-    salaryExpectations: ''
-  },
-  nclexStatus: {
-    hasTakenNCLEX: false,
-    nclexResult: '',
-    planToTake: '',
-    studyTimeframe: '',
-    needsSupport: true,
-    studyMaterials: []
-  },
-  currentStep: 0
-};
-
-const stepTitles = [
-  'Personal',
-  'Profesional',
-  'Experiencia',
-  'Inglés',
-  'Preferencias',
-  'NCLEX-RN',
-  'Resumen'
-];
+import { useOnboardingStore, stepTitles } from './store/onboardingStore';
 
 function App() {
-  const [data, setData] = useState<OnboardingData>(() => {
-    // Load saved data from localStorage on initial load
-    const savedData = localStorage.getItem('mora-health-onboarding');
-    if (savedData) {
-      try {
-        return JSON.parse(savedData);
-      } catch (error) {
-        console.error('Error parsing saved data:', error);
-        return initialData;
-      }
-    }
-    return initialData;
-  });
-  
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-
-  // Auto-save functionality
-  useEffect(() => {
-    if (showOnboarding && data.currentStep >= 0) {
-      const saveTimer = setTimeout(() => {
-        try {
-          localStorage.setItem('mora-health-onboarding', JSON.stringify(data));
-        } catch (error) {
-          console.error('Error saving data:', error);
-        }
-      }, 1000); // Save after 1 second of inactivity
-
-      return () => clearTimeout(saveTimer);
-    }
-  }, [data, showOnboarding]);
-
-  // Calculate completed steps
-  const getCompletedSteps = (): number[] => {
-    const completed: number[] = [];
-    
-    // Check each step completion (adjusted indices after removing welcome step)
-    if (data.personalInfo.firstName && data.personalInfo.lastName && data.personalInfo.email) {
-      completed.push(0);
-    }
-    if (data.professionalInfo.nursingDegree && data.professionalInfo.graduationYear) {
-      completed.push(1);
-    }
-    if (data.workExperience.hospitalName && data.workExperience.position) {
-      completed.push(2);
-    }
-    if (data.englishProficiency.speakingLevel && data.englishProficiency.listeningLevel) {
-      completed.push(3);
-    }
-    if (data.usPreferences.preferredStates.length > 0 && data.usPreferences.startDate) {
-      completed.push(4);
-    }
-    if (data.nclexStatus.planToTake && data.nclexStatus.studyTimeframe) {
-      completed.push(5);
-    }
-    
-    return completed;
-  };
-
-  const updatePersonalInfo = (updates: Partial<OnboardingData['personalInfo']>) => {
-    setData(prev => ({
-      ...prev,
-      personalInfo: { ...prev.personalInfo, ...updates }
-    }));
-  };
-
-  const updateProfessionalInfo = (updates: Partial<OnboardingData['professionalInfo']>) => {
-    setData(prev => ({
-      ...prev,
-      professionalInfo: { ...prev.professionalInfo, ...updates }
-    }));
-  };
-
-  const updateWorkExperience = (updates: Partial<OnboardingData['workExperience']>) => {
-    setData(prev => ({
-      ...prev,
-      workExperience: { ...prev.workExperience, ...updates }
-    }));
-  };
-
-  const updateEnglishProficiency = (updates: Partial<OnboardingData['englishProficiency']>) => {
-    setData(prev => ({
-      ...prev,
-      englishProficiency: { ...prev.englishProficiency, ...updates }
-    }));
-  };
-
-  const updateUSPreferences = (updates: Partial<OnboardingData['usPreferences']>) => {
-    setData(prev => ({
-      ...prev,
-      usPreferences: { ...prev.usPreferences, ...updates }
-    }));
-  };
-
-  const updateNCLEXStatus = (updates: Partial<OnboardingData['nclexStatus']>) => {
-    setData(prev => ({
-      ...prev,
-      nclexStatus: { ...prev.nclexStatus, ...updates }
-    }));
-  };
-
-  const nextStep = () => {
-    setData(prev => ({
-      ...prev,
-      currentStep: Math.min(prev.currentStep + 1, stepTitles.length - 1)
-    }));
-  };
-
-  const startOnboarding = () => {
-    setShowOnboarding(true);
-    setData(prev => ({ ...prev, currentStep: 0 })); // Start with personal info (now index 0)
-  };
-
-  const previousStep = () => {
-    setData(prev => ({
-      ...prev,
-      currentStep: Math.max(prev.currentStep - 1, 0)
-    }));
-  };
-
-  const goToStep = (stepIndex: number) => {
-    const completedSteps = getCompletedSteps();
-    // Allow navigation to completed steps or current step
-    if (completedSteps.includes(stepIndex) || stepIndex === data.currentStep) {
-      setData(prev => ({ ...prev, currentStep: stepIndex }));
-    }
-  };
-
-  const handleSubmit = () => {
-    // Clear saved data on successful submission
-    localStorage.removeItem('mora-health-onboarding');
-    
-    // Here you would typically send the data to your backend
-    console.log('Submitting application:', data);
-    
-    // Show success modal instead of alert
-    setShowSuccessModal(true);
-  };
-
-  const handleSuccessModalClose = () => {
-    setShowSuccessModal(false);
-    // Reset to initial state
-    setData(initialData);
-    setShowOnboarding(false);
-  };
+  const {
+    data,
+    showOnboarding,
+    showSuccessModal,
+    startOnboarding,
+    setShowOnboarding,
+    handleSuccessModalClose,
+    getCompletedSteps,
+    goToStep
+  } = useOnboardingStore();
 
   const renderStep = () => {
     switch (data.currentStep) {
       case 0:
-        return (
-          <PersonalInfoStep
-            data={data.personalInfo}
-            updateData={updatePersonalInfo}
-            onNext={nextStep}
-            onPrevious={previousStep}
-          />
-        );
+        return <PersonalInfoStep />;
       case 1:
-        return (
-          <ProfessionalInfoStep
-            data={data.professionalInfo}
-            updateData={updateProfessionalInfo}
-            onNext={nextStep}
-            onPrevious={previousStep}
-          />
-        );
+        return <ProfessionalInfoStep />;
       case 2:
-        return (
-          <WorkExperienceStep
-            data={data.workExperience}
-            updateData={updateWorkExperience}
-            onNext={nextStep}
-            onPrevious={previousStep}
-          />
-        );
+        return <WorkExperienceStep />;
       case 3:
-        return (
-          <EnglishProficiencyStep
-            data={data.englishProficiency}
-            updateData={updateEnglishProficiency}
-            onNext={nextStep}
-            onPrevious={previousStep}
-          />
-        );
+        return <EnglishProficiencyStep />;
       case 4:
-        return (
-          <USPreferencesStep
-            data={data.usPreferences}
-            updateData={updateUSPreferences}
-            onNext={nextStep}
-            onPrevious={previousStep}
-          />
-        );
+        return <USPreferencesStep />;
       case 5:
-        return (
-          <NCLEXStatusStep
-            data={data.nclexStatus}
-            updateData={updateNCLEXStatus}
-            onNext={nextStep}
-            onPrevious={previousStep}
-          />
-        );
+        return <NCLEXStatusStep />;
       case 6:
-        return (
-          <SummaryStep
-            data={data}
-            onPrevious={previousStep}
-            onSubmit={handleSubmit}
-          />
-        );
+        return <SummaryStep />;
       default:
-        return (
-          <PersonalInfoStep
-            data={data.personalInfo}
-            updateData={updatePersonalInfo}
-            onNext={nextStep}
-            onPrevious={previousStep}
-          />
-        );
+        return <PersonalInfoStep />;
     }
   };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAF7EA' }}>
-      {/* Header */}
       <header className="mora-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -326,17 +63,13 @@ function App() {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="relative">
         {!showOnboarding ? (
           <>
-            {/* Hero Section - Only show when on welcome step */}
             <div className="relative overflow-hidden">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                  {/* Left Content */}
                   <div className="text-center lg:text-left">
-                    {/* Small nurse avatars */}
                     <div className="flex justify-center lg:justify-start items-center mb-6">
                       <div className="flex -space-x-2">
                         <img 
@@ -360,7 +93,6 @@ function App() {
                       </p>
                     </div>
 
-                    {/* Main Heading */}
                     <div className="mb-6">
                       <h1 className="mora-hero-title">
                         Logra tus objetivos con una carrera de{' '}
@@ -378,7 +110,6 @@ function App() {
                       </h1>
                     </div>
 
-                    {/* Description */}
                     <p className="text-lg text-gray-600 mb-8 max-w-2xl">
                       Únete a cientos de enfermeras y enfermeros mexicanos que están 
                       construyendo su carrera soñada en Estados Unidos. Gana hasta 8 veces más, 
@@ -386,7 +117,6 @@ function App() {
                       apoyo completo sin costo alguno.
                     </p>
 
-                    {/* CTA Button */}
                     <button 
                       onClick={startOnboarding}
                       className="mora-btn-primary px-8 py-4 rounded-lg font-semibold shadow-lg text-lg"
@@ -394,13 +124,11 @@ function App() {
                       Comienza Tu Viaje
                     </button>
 
-                    {/* Small text */}
                     <p className="text-sm text-gray-500 mt-4">
                       5 minutos para registrarse en línea
                     </p>
                   </div>
 
-                  {/* Right Content - Nurse Image */}
                   <div className="relative">
                     <div className="relative">
                       <img 
@@ -409,7 +137,6 @@ function App() {
                         className="w-full max-w-lg mx-auto rounded-2xl shadow-2xl object-cover"
                       />
                       
-                      {/* Floating CTA */}
                       <div className="absolute bottom-6 right-6 bg-white rounded-lg shadow-lg p-4 max-w-xs">
                         <p className="text-sm text-gray-600 mb-2">
                           Tu camino hacia una carrera<br />de enfermería en EE.UU.
@@ -427,14 +154,11 @@ function App() {
               </div>
             </div>
 
-            {/* Process Section */}
             <ProcessSection onStartJourney={startOnboarding} />
           </>
         ) : (
-          // Onboarding Steps - Using same background color for consistency
           <div className="min-h-screen" style={{ backgroundColor: '#FAF7EA' }}>
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              {/* Back to Home Button */}
               <div className="mb-8">
                 <button
                   onClick={() => setShowOnboarding(false)}
@@ -447,7 +171,6 @@ function App() {
                 </button>
               </div>
 
-              {/* Step Indicator - Fixed position */}
               <StepIndicator
                 currentStep={data.currentStep}
                 totalSteps={stepTitles.length}
@@ -456,7 +179,6 @@ function App() {
                 onStepClick={goToStep}
               />
               
-              {/* Main Step Content */}
               <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
                 <div className="p-8 md:p-12">
                   {renderStep()}
@@ -467,7 +189,6 @@ function App() {
         )}
       </div>
 
-      {/* Simple Footer */}
       <footer className="mora-footer">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -507,7 +228,6 @@ function App() {
         </div>
       </footer>
 
-      {/* Success Modal */}
       <SuccessModal 
         isOpen={showSuccessModal}
         onClose={handleSuccessModalClose}

@@ -38,25 +38,16 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
     return () => clearTimeout(timer);
   }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && e.ctrlKey && canGoNext && !isLoading) {
-      onNext();
-    }
-  };
-
   return (
     <div 
       className={`w-full transition-all duration-300 ease-out ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
-      onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
-      {/* Header with enhanced metadata */}
       <div className="mb-8">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-           
             <h2 className="text-3xl md:text-4xl font-bold mora-text-primary mb-2 animate-in fade-in duration-500">
               {title}
             </h2>
@@ -66,20 +57,14 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
               </p>
             )}
           </div>
-          
-         
         </div>
-        
-        
       </div>
 
-      {/* Main content */}
       <div className="mb-8">
         <div className={`${isLoading ? 'opacity-50' : ''}`}>
           {children}
         </div>
         
-        {/* Loading overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center">
             <div className="flex items-center gap-3 text-purple-600">
@@ -90,7 +75,6 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
         )}
       </div>
 
-      {/* Navigation buttons */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         {!isFirst ? (
           <button
@@ -106,14 +90,6 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
         )}
 
         <div className="flex items-center gap-3">
-          {/* Keyboard shortcut hint */}
-          {canGoNext && !isLoading && (
-            <div className="hidden md:flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
-              <kbd className="px-1 py-0.5 bg-white border border-gray-200 rounded text-xs">Ctrl</kbd>
-              <span>+</span>
-              <kbd className="px-1 py-0.5 bg-white border border-gray-200 rounded text-xs">Enter</kbd>
-            </div>
-          )}
           
           <button
             onClick={onNext}
@@ -143,7 +119,6 @@ export const StepWrapper: React.FC<StepWrapperProps> = ({
         </div>
       </div>
 
-      {/* Accessibility improvements */}
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {isLoading && "Procesando información del paso"}
         {completionPercentage === 100 && "Paso completado al 100%"}

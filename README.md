@@ -11,7 +11,7 @@ Este proyecto fue desarrollado para demostrar una solución completa al proceso 
 ### ✨ Experiencia de Usuario
 - **Diseño Responsivo**: Optimizado para desktop, tablet y móvil
 - **Interfaz Intuitiva**: Flujo paso a paso con indicadores de progreso
-- **Guardado Automático**: Los datos se guardan automáticamente en localStorage
+- **Guardado Automático**: Los datos se guardan automáticamente y de forma persistente en localStorage mediante Zustand
 - **Navegación Flexible**: Posibilidad de navegar entre pasos completados
 - **Validación en Tiempo Real**: Feedback inmediato sobre campos requeridos
 
@@ -63,8 +63,7 @@ Este proyecto fue desarrollado para demostrar una solución completa al proceso 
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
 - **Calendar**: React Calendar
-- **State Management**: React Hooks (useState, useEffect)
-- **Storage**: localStorage para persistencia de datos
+- **Storage**: Persistencia de datos mediante Zustand y localStorage
 
 ## 📁 Estructura del Proyecto
 
@@ -88,6 +87,8 @@ src/
 │   ├── StepIndicator.tsx         # Indicador de progreso
 │   ├── ProcessSection.tsx        # Sección de proceso
 │   └── SuccessModal.tsx          # Modal de éxito
+├── store/
+│   └── onboardingStore.ts        # Store global de Zustand para el onboarding
 ├── types/
 │   └── onboarding.ts            # Definiciones de tipos TypeScript
 ├── App.tsx                      # Componente principal

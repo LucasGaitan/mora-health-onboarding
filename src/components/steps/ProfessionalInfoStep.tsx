@@ -1,23 +1,14 @@
 import { StepWrapper } from '../StepWrapper';
 import { FormField } from '../ui/FormField';
-import { ProfessionalInfo } from '../../types/onboarding';
+import { useOnboardingStore } from '../../store/onboardingStore';
 import { Plus, X } from 'lucide-react';
 
-interface ProfessionalInfoStepProps {
-  data: ProfessionalInfo;
-  updateData: (data: Partial<ProfessionalInfo>) => void;
-  onNext: () => void;
-  onPrevious: () => void;
-}
+export const ProfessionalInfoStep: React.FC = () => {
+  const { data, updateProfessionalInfo, nextStep, previousStep } = useOnboardingStore();
+  const professionalData = data.professionalInfo;
 
-export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
-  data,
-  updateData,
-  onNext,
-  onPrevious
-}) => {
-  const isValid = data.nursingDegree && data.graduationYear && data.nursingSchool && 
-    data.nursingLicense && data.licenseExpiry && data.yearsOfExperience;
+  const isValid = professionalData.nursingDegree && professionalData.graduationYear && professionalData.nursingSchool && 
+    professionalData.nursingLicense && professionalData.licenseExpiry && professionalData.yearsOfExperience;
 
   const availableSpecializations = [
     'Enfermería General',
@@ -35,14 +26,14 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
   ];
 
   const addSpecialization = (spec: string) => {
-    if (!data.specializations.includes(spec)) {
-      updateData({ specializations: [...data.specializations, spec] });
+    if (!professionalData.specializations.includes(spec)) {
+      updateProfessionalInfo({ specializations: [...professionalData.specializations, spec] });
     }
   };
 
   const removeSpecialization = (spec: string) => {
-    updateData({ 
-      specializations: data.specializations.filter(s => s !== spec) 
+    updateProfessionalInfo({ 
+      specializations: professionalData.specializations.filter(s => s !== spec) 
     });
   };
 
@@ -50,8 +41,8 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
     <StepWrapper
       title="Información Profesional"
       subtitle="Cuéntanos sobre tu formación y credenciales en enfermería"
-      onNext={onNext}
-      onPrevious={onPrevious}
+      onNext={nextStep}
+      onPrevious={previousStep}
       canGoNext={!!isValid}
     >
       <div className="space-y-8">
@@ -76,8 +67,8 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
               Título de enfermería *
             </label>
             <select
-              value={data.nursingDegree}
-              onChange={(e) => updateData({ nursingDegree: e.target.value })}
+              value={professionalData.nursingDegree}
+              onChange={(e) => updateProfessionalInfo({ nursingDegree: e.target.value })}
               className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-lg"
             >
               <option value="">Selecciona tu título</option>
@@ -96,8 +87,8 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
               type="number"
               min="1990"
               max={new Date().getFullYear()}
-              value={data.graduationYear}
-              onChange={(e) => updateData({ graduationYear: e.target.value })}
+              value={professionalData.graduationYear}
+              onChange={(e) => updateProfessionalInfo({ graduationYear: e.target.value })}
               className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-lg"
               placeholder="2020"
             />
@@ -110,8 +101,8 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
           </label>
           <input
             type="text"
-            value={data.nursingSchool}
-            onChange={(e) => updateData({ nursingSchool: e.target.value })}
+            value={professionalData.nursingSchool}
+            onChange={(e) => updateProfessionalInfo({ nursingSchool: e.target.value })}
             className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-lg"
             placeholder="Nombre de la universidad o instituto"
           />
@@ -121,8 +112,8 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
           <FormField
             label="Número de cédula profesional"
             type="text"
-            value={data.nursingLicense}
-            onChange={(value: string) => updateData({ nursingLicense: value })}
+            value={professionalData.nursingLicense}
+            onChange={(value: string) => updateProfessionalInfo({ nursingLicense: value })}
             placeholder="Número de cédula"
             required
             autoComplete="off"
@@ -132,8 +123,8 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
           <FormField
             label="Vigencia de la licencia"
             type="date"
-            value={data.licenseExpiry}
-            onChange={(value: string) => updateData({ licenseExpiry: value })}
+            value={professionalData.licenseExpiry}
+            onChange={(value: string) => updateProfessionalInfo({ licenseExpiry: value })}
             required
             useCalendarPicker={true}
             helpText="Fecha de vencimiento de tu licencia profesional"
@@ -146,8 +137,8 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
             Años de experiencia *
           </label>
           <select
-            value={data.yearsOfExperience}
-            onChange={(e) => updateData({ yearsOfExperience: e.target.value })}
+            value={professionalData.yearsOfExperience}
+            onChange={(e) => updateProfessionalInfo({ yearsOfExperience: e.target.value })}
             className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-lg"
           >
             <option value="">Selecciona tu experiencia</option>
@@ -164,9 +155,9 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
             Especializaciones y áreas de experiencia
           </label>
           
-          {data.specializations.length > 0 && (
+          {professionalData.specializations.length > 0 && (
             <div className="flex flex-wrap gap-3 mb-6">
-              {data.specializations.map((spec, index) => (
+              {professionalData.specializations.map((spec, index) => (
                 <span
                   key={index}
                   className="inline-flex items-center px-4 py-2 rounded-full text-sm bg-purple-100 text-purple-800 font-medium"
@@ -185,7 +176,7 @@ export const ProfessionalInfoStep: React.FC<ProfessionalInfoStepProps> = ({
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {availableSpecializations
-              .filter(spec => !data.specializations.includes(spec))
+              .filter(spec => !professionalData.specializations.includes(spec))
               .map((spec, index) => (
                 <button
                   key={index}

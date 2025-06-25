@@ -29,12 +29,10 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
 
   return (
     <>
-      {/* Mobile Design - Horizontal Header */}
       <div className={`md:hidden mb-6 transition-all duration-500 ${
         isVisible ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
       }`}>
         <div className="bg-white/95 backdrop-blur-lg rounded-xl shadow-lg border border-gray-200/50 overflow-hidden">
-          {/* Mobile Header - Always visible */}
           <div className="px-4 py-3">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -65,7 +63,6 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
               </button>
             </div>
             
-            {/* Mobile Progress Bar */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs text-gray-600">
                 <span>Progreso</span>
@@ -80,7 +77,6 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
             </div>
           </div>
 
-          {/* Mobile Expanded Content */}
           <div className={`border-t border-gray-100 transition-all duration-300 ease-in-out ${
             isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           } overflow-hidden`}>
@@ -147,12 +143,10 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
         </div>
       </div>
 
-      {/* Desktop Design - Sidebar (unchanged) */}
       <div className={`hidden md:block fixed top-24 right-4 z-40 w-80 lg:w-96 transition-all duration-500 ${
         isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
       }`}>
         <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden transition-all duration-300 hover:shadow-2xl">
-          {/* Header - Always visible with enhanced design */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50/50 transition-colors group"
@@ -176,7 +170,6 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
             </div>
           </button>
 
-          {/* Enhanced progress bar */}
           <div className="px-5 pb-4">
             <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
               <span>Progreso general</span>
@@ -191,7 +184,6 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
             </div>
           </div>
 
-          {/* Expanded content with smooth animations and better scroll */}
           <div className={`border-t border-gray-100 transition-all duration-300 ease-in-out ${
             isExpanded ? 'max-h-[32rem] opacity-100' : 'max-h-0 opacity-0'
           } overflow-hidden`}>
@@ -250,7 +242,6 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                         {title}
                       </div>
                       
-                      {/* Enhanced status indicator */}
                       <div className="text-xs mt-1 flex items-center gap-1">
                         {isCompleted && (
                           <span className="text-green-600 font-medium flex items-center gap-1">

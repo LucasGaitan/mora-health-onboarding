@@ -101,22 +101,14 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onStartJourney }
   return (
     <section className="pt-10 pb-20" style={{ backgroundColor: '#FAF7EA' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Single Card Container */}
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12">
-            {/* Left Column - Purple Section */}
             <div className="lg:col-span-5 relative" style={{ backgroundColor: '#5942D8' }}>
               <div className="relative p-8 lg:p-12 text-white overflow-hidden h-full">
-                {/* Curved SVG Background */}
-               
-                {/* Content */}
                 <div className="relative z-10 h-full flex flex-col">
-                  {/* Badge */}
                   <div className="inline-flex items-center px-4 py-2 bg-white/20 rounded-full text-white font-medium text-sm mb-6 w-fit">
                     El proceso
                   </div>
-
-                  {/* Title */}
                   <h2 className="text-3xl lg:text-4xl font-bold mb-6 leading-tight">
                     <div className="flex flex-wrap gap-2">
                       <span>Tu</span>
@@ -134,14 +126,12 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onStartJourney }
                     </div>
                   </h2>
 
-                  {/* Description */}
                   <p className="text-lg text-white/90 mb-8 leading-relaxed">
                     En Mora, facilitamos que enfermeras y enfermeros mexicanos inicien una carrera en Estados Unidos. 
                     Nos encargamos de cada paso, desde el papeleo hasta los exámenes y la colocación laboral, 
                     para que puedas concentrarte en tu futuro.
                   </p>
 
-                  {/* We help you with */}
                   <div className="mb-8 flex-grow">
                     <p className="text-lg font-bold text-white mb-4">We help you with</p>
                     <div className="flex flex-wrap gap-2">
@@ -160,7 +150,6 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onStartJourney }
                     </div>
                   </div>
 
-                  {/* CTA Button */}
                   <div className="mt-auto">
                     <button 
                       onClick={onStartJourney}
@@ -173,12 +162,10 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onStartJourney }
               </div>
             </div>
 
-            {/* Right Column - Process Steps */}
             <div className="lg:col-span-7 p-8 lg:p-12">
               <div className="space-y-6">
                 {processSteps.map((step, index) => (
                   <div key={step.number} className="flex items-start gap-6 group">
-                    {/* Icon and Line */}
                     <div className="flex flex-col items-center flex-shrink-0">
                       <div 
                         className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-colors ${
@@ -204,7 +191,6 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onStartJourney }
                       )}
                     </div>
                     
-                    {/* Content */}
                     <div className="flex-1">
                       <h3 className="text-xl font-bold text-gray-900 mb-3">
                         <span className="text-indigo-600 mr-2">{step.number}.</span>

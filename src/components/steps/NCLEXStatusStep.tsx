@@ -1,22 +1,13 @@
 import { StepWrapper } from '../StepWrapper';
-import { NCLEXStatus } from '../../types/onboarding';
+import { useOnboardingStore } from '../../store/onboardingStore';
 import { Plus, X } from 'lucide-react';
 
-interface NCLEXStatusStepProps {
-  data: NCLEXStatus;
-  updateData: (data: Partial<NCLEXStatus>) => void;
-  onNext: () => void;
-  onPrevious: () => void;
-}
+export const NCLEXStatusStep: React.FC = () => {
+  const { data, updateNCLEXStatus, nextStep, previousStep } = useOnboardingStore();
+  const nclexData = data.nclexStatus;
 
-export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
-  data,
-  updateData,
-  onNext,
-  onPrevious
-}) => {
-  const isValid = data.hasTakenNCLEX !== undefined && data.planToTake && 
-    data.studyTimeframe && data.needsSupport !== undefined;
+  const isValid = nclexData.hasTakenNCLEX !== undefined && nclexData.planToTake && 
+    nclexData.studyTimeframe && nclexData.needsSupport !== undefined;
 
   const studyMaterialOptions = [
     'UWorld',
@@ -32,13 +23,13 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
   ];
 
   const toggleStudyMaterial = (material: string) => {
-    if (data.studyMaterials.includes(material)) {
-      updateData({ 
-        studyMaterials: data.studyMaterials.filter(m => m !== material) 
+    if (nclexData.studyMaterials.includes(material)) {
+      updateNCLEXStatus({ 
+        studyMaterials: nclexData.studyMaterials.filter(m => m !== material) 
       });
     } else {
-      updateData({ 
-        studyMaterials: [...data.studyMaterials, material] 
+      updateNCLEXStatus({ 
+        studyMaterials: [...nclexData.studyMaterials, material] 
       });
     }
   };
@@ -47,8 +38,8 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
     <StepWrapper
       title="Estado del NCLEX-RN"
       subtitle="El NCLEX-RN es el examen requerido para ejercer como enfermera en Estados Unidos"
-      onNext={onNext}
-      onPrevious={onPrevious}
+      onNext={nextStep}
+      onPrevious={previousStep}
       canGoNext={!!isValid}
     >
       <div className="space-y-8">
@@ -69,8 +60,8 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
               <input
                 type="radio"
                 name="hasTakenNCLEX"
-                checked={data.hasTakenNCLEX === true}
-                onChange={() => updateData({ hasTakenNCLEX: true })}
+                checked={nclexData.hasTakenNCLEX === true}
+                onChange={() => updateNCLEXStatus({ hasTakenNCLEX: true })}
                 className="mr-2 text-blue-600"
               />
               Sí, he tomado el NCLEX-RN
@@ -79,8 +70,8 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
               <input
                 type="radio"
                 name="hasTakenNCLEX"
-                checked={data.hasTakenNCLEX === false}
-                onChange={() => updateData({ hasTakenNCLEX: false })}
+                checked={nclexData.hasTakenNCLEX === false}
+                onChange={() => updateNCLEXStatus({ hasTakenNCLEX: false })}
                 className="mr-2 text-blue-600"
               />
               No, nunca he tomado el NCLEX-RN
@@ -88,14 +79,14 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
           </div>
         </div>
 
-        {data.hasTakenNCLEX && (
+        {nclexData.hasTakenNCLEX && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Resultado del examen
             </label>
             <select
-              value={data.nclexResult}
-              onChange={(e) => updateData({ nclexResult: e.target.value })}
+              value={nclexData.nclexResult}
+              onChange={(e) => updateNCLEXStatus({ nclexResult: e.target.value })}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             >
               <option value="">Selecciona el resultado</option>
@@ -111,8 +102,8 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
             ¿Cuáles son tus planes respecto al NCLEX-RN? *
           </label>
           <select
-            value={data.planToTake}
-            onChange={(e) => updateData({ planToTake: e.target.value })}
+            value={nclexData.planToTake}
+            onChange={(e) => updateNCLEXStatus({ planToTake: e.target.value })}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
           >
             <option value="">Selecciona tu plan</option>
@@ -130,8 +121,8 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
             ¿En qué timeframe planeas estudiar/presentar el examen? *
           </label>
           <select
-            value={data.studyTimeframe}
-            onChange={(e) => updateData({ studyTimeframe: e.target.value })}
+            value={nclexData.studyTimeframe}
+            onChange={(e) => updateNCLEXStatus({ studyTimeframe: e.target.value })}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
           >
             <option value="">Selecciona timeframe</option>
@@ -152,8 +143,8 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
               <input
                 type="radio"
                 name="needsSupport"
-                checked={data.needsSupport === true}
-                onChange={() => updateData({ needsSupport: true })}
+                checked={nclexData.needsSupport === true}
+                onChange={() => updateNCLEXStatus({ needsSupport: true })}
                 className="mr-2 text-blue-600"
               />
               Sí, me gustaría recibir apoyo de Mora Health
@@ -162,8 +153,8 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
               <input
                 type="radio"
                 name="needsSupport"
-                checked={data.needsSupport === false}
-                onChange={() => updateData({ needsSupport: false })}
+                checked={nclexData.needsSupport === false}
+                onChange={() => updateNCLEXStatus({ needsSupport: false })}
                 className="mr-2 text-blue-600"
               />
               No, prefiero prepararme por mi cuenta
@@ -176,9 +167,9 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
             ¿Qué materiales de estudio has usado o planeas usar? (opcional)
           </label>
           
-          {data.studyMaterials.length > 0 && (
+          {nclexData.studyMaterials.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
-              {data.studyMaterials.map((material, index) => (
+              {nclexData.studyMaterials.map((material, index) => (
                 <span
                   key={index}
                   className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800"
@@ -197,7 +188,7 @@ export const NCLEXStatusStep: React.FC<NCLEXStatusStepProps> = ({
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {studyMaterialOptions
-              .filter(material => !data.studyMaterials.includes(material))
+              .filter(material => !nclexData.studyMaterials.includes(material))
               .map((material, index) => (
                 <button
                   key={index}
