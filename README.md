@@ -153,7 +153,7 @@ npm run preview
 
 **Lucas Gaitán**
 - LinkedIn: [https://www.linkedin.com/in/lucas-gaitan/](https://www.linkedin.com/in/lucas-gaitan/)
-- Email: [lucasgaitan@gmail.com](mailto:lucasgaitan9112@gmail.com)
+- Email: [lucasgaitan9112@gmail.com](mailto:lucasgaitan9112@gmail.com)
 
 ## 📄 Licencia
 
